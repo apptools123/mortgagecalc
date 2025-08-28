@@ -1,0 +1,905 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Free Mortgage Calculator - Calculate Your Monthly Payments</title>
+    <meta name="description" content="Calculate your monthly mortgage payments with our free, easy-to-use mortgage calculator. Get instant results for home loans, refinancing, and more.">
+    <meta name="keywords" content="mortgage calculator, home loan calculator, monthly payment calculator, mortgage payment, home financing">
+    
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        header {
+            text-align: center;
+            margin-bottom: 40px;
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            border-radius: 20px;
+            padding: 30px;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+        }
+
+        h1 {
+            color: white;
+            font-size: 3em;
+            margin-bottom: 10px;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+            animation: slideInDown 1s ease-out;
+        }
+
+        .subtitle {
+            color: rgba(255, 255, 255, 0.9);
+            font-size: 1.2em;
+            margin-bottom: 20px;
+        }
+
+        @keyframes slideInDown {
+            from {
+                opacity: 0;
+                transform: translateY(-50px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .main-content {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 30px;
+            margin-bottom: 40px;
+        }
+
+        @media (max-width: 768px) {
+            .main-content {
+                grid-template-columns: 1fr;
+            }
+            
+            h1 {
+                font-size: 2.2em;
+            }
+        }
+
+        .calculator-card, .results-card {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(15px);
+            border-radius: 20px;
+            padding: 30px;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.15);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        .calculator-card:hover, .results-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 15px 50px rgba(0, 0, 0, 0.2);
+        }
+
+        .card-title {
+            font-size: 1.8em;
+            margin-bottom: 25px;
+            color: #2c3e50;
+            text-align: center;
+            border-bottom: 3px solid #667eea;
+            padding-bottom: 10px;
+        }
+
+        .form-group {
+            margin-bottom: 25px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+            color: #2c3e50;
+            font-size: 1.1em;
+        }
+
+        select {
+            width: 100%;
+            padding: 15px;
+            border: 2px solid #e0e0e0;
+            border-radius: 12px;
+            font-size: 1.1em;
+            transition: all 0.3s ease;
+            background: white;
+            cursor: pointer;
+        }
+
+        select:focus {
+            outline: none;
+            border-color: #667eea;
+            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+            transform: translateY(-2px);
+        }
+
+        input[type="number"] {
+            width: 100%;
+            padding: 15px;
+            border: 2px solid #e0e0e0;
+            border-radius: 12px;
+            font-size: 1.1em;
+            transition: all 0.3s ease;
+            background: white;
+        }
+
+        input[type="number"]:focus {
+            outline: none;
+            border-color: #667eea;
+            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+            transform: translateY(-2px);
+        }
+
+        .calculate-btn {
+            width: 100%;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            padding: 18px;
+            border-radius: 12px;
+            font-size: 1.2em;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            box-shadow: 0 5px 20px rgba(102, 126, 234, 0.3);
+        }
+
+        .calculate-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 25px rgba(102, 126, 234, 0.4);
+        }
+
+        .calculate-btn:active {
+            transform: translateY(0);
+        }
+
+        .results {
+            text-align: center;
+        }
+
+        .monthly-payment {
+            font-size: 3em;
+            font-weight: bold;
+            color: #27ae60;
+            margin-bottom: 20px;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.1);
+            animation: pulse 2s ease-in-out infinite alternate;
+        }
+
+        @keyframes pulse {
+            from { opacity: 0.8; }
+            to { opacity: 1; }
+        }
+
+        .breakdown {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+            margin-top: 25px;
+        }
+
+        .breakdown-item {
+            background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+            padding: 20px;
+            border-radius: 12px;
+            border-left: 4px solid #667eea;
+            transition: transform 0.2s ease;
+        }
+
+        .breakdown-item:hover {
+            transform: translateX(5px);
+        }
+
+        .breakdown-label {
+            font-size: 0.9em;
+            color: #666;
+            margin-bottom: 5px;
+        }
+
+        .breakdown-value {
+            font-size: 1.4em;
+            font-weight: bold;
+            color: #2c3e50;
+        }
+
+        .info-section {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(15px);
+            border-radius: 20px;
+            padding: 30px;
+            margin-bottom: 30px;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.15);
+        }
+
+        .info-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 30px;
+            margin-top: 30px;
+        }
+
+        .tip-card {
+            background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+            padding: 25px;
+            border-radius: 15px;
+            border-left: 5px solid #28a745;
+            transition: transform 0.3s ease;
+        }
+
+        .tip-card:hover {
+            transform: translateY(-5px);
+        }
+
+        .tip-title {
+            font-size: 1.3em;
+            font-weight: bold;
+            color: #2c3e50;
+            margin-bottom: 10px;
+        }
+
+        .ad-placeholder {
+            background: #f8f9fa;
+            border: 2px dashed #dee2e6;
+            border-radius: 10px;
+            padding: 40px;
+            text-align: center;
+            color: #6c757d;
+            margin: 30px 0;
+            font-size: 1.1em;
+        }
+
+        footer {
+            text-align: center;
+            padding: 30px;
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            border-radius: 20px;
+            color: white;
+            margin-top: 40px;
+        }
+
+        .error {
+            color: #e74c3c;
+            font-size: 0.9em;
+            margin-top: 5px;
+        }
+
+        .currency {
+            font-size: 0.8em;
+            color: #666;
+            vertical-align: super;
+        }
+
+        .floating-elements {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: -1;
+        }
+
+        .floating-circle {
+            position: absolute;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 50%;
+            animation: float 15s infinite ease-in-out;
+        }
+
+        .floating-circle:nth-child(1) {
+            width: 100px;
+            height: 100px;
+            top: 20%;
+            left: 10%;
+            animation-delay: 0s;
+        }
+
+        .floating-circle:nth-child(2) {
+            width: 150px;
+            height: 150px;
+            top: 60%;
+            right: 10%;
+            animation-delay: -5s;
+        }
+
+        .floating-circle:nth-child(3) {
+            width: 80px;
+            height: 80px;
+            top: 80%;
+            left: 20%;
+            animation-delay: -10s;
+        }
+
+        @keyframes float {
+            0%, 100% { transform: translateY(0px) rotate(0deg); }
+            50% { transform: translateY(-20px) rotate(180deg); }
+        }
+    </style>
+</head>
+<body>
+    <div class="floating-elements">
+        <div class="floating-circle"></div>
+        <div class="floating-circle"></div>
+        <div class="floating-circle"></div>
+    </div>
+
+    <div class="container">
+        <header>
+            <h1>🏠 Mortgage Calculator</h1>
+            <p class="subtitle">Calculate your monthly mortgage payments instantly and make informed home buying decisions</p>
+        </header>
+
+        <!-- Ad placeholder for header banner -->
+        <div class="ad-placeholder">
+            📢 Google AdSense Banner Ad Space (728x90)
+        </div>
+
+        <div class="main-content">
+            <div class="calculator-card">
+                <h2 class="card-title">Loan Details</h2>
+                
+                <div class="form-group">
+                    <label for="currency">Currency</label>
+                    <select id="currency" onchange="updateCurrency()">
+                        <option value="USD" data-symbol="$">🇺🇸 United States Dollar (USD)</option>
+                        <option value="EUR" data-symbol="€">🇪🇺 Euro (EUR)</option>
+                        <option value="GBP" data-symbol="£">🇬🇧 British Pound (GBP)</option>
+                        <option value="CAD" data-symbol="C$">🇨🇦 Canadian Dollar (CAD)</option>
+                        <option value="AUD" data-symbol="A$">🇦🇺 Australian Dollar (AUD)</option>
+                        <option value="JPY" data-symbol="¥">🇯🇵 Japanese Yen (JPY)</option>
+                        <option value="CHF" data-symbol="CHF">🇨🇭 Swiss Franc (CHF)</option>
+                        <option value="CNY" data-symbol="¥">🇨🇳 Chinese Yuan (CNY)</option>
+                        <option value="INR" data-symbol="₹">🇮🇳 Indian Rupee (INR)</option>
+                        <option value="KRW" data-symbol="₩">🇰🇷 South Korean Won (KRW)</option>
+                        <option value="SGD" data-symbol="S$">🇸🇬 Singapore Dollar (SGD)</option>
+                        <option value="HKD" data-symbol="HK$">🇭🇰 Hong Kong Dollar (HKD)</option>
+                        <option value="NZD" data-symbol="NZ$">🇳🇿 New Zealand Dollar (NZD)</option>
+                        <option value="SEK" data-symbol="kr">🇸🇪 Swedish Krona (SEK)</option>
+                        <option value="NOK" data-symbol="kr">🇳🇴 Norwegian Krone (NOK)</option>
+                        <option value="DKK" data-symbol="kr">🇩🇰 Danish Krone (DKK)</option>
+                        <option value="PLN" data-symbol="zł">🇵🇱 Polish Złoty (PLN)</option>
+                        <option value="CZK" data-symbol="Kč">🇨🇿 Czech Koruna (CZK)</option>
+                        <option value="HUF" data-symbol="Ft">🇭🇺 Hungarian Forint (HUF)</option>
+                        <option value="RUB" data-symbol="₽">🇷🇺 Russian Ruble (RUB)</option>
+                        <option value="BRL" data-symbol="R$">🇧🇷 Brazilian Real (BRL)</option>
+                        <option value="MXN" data-symbol="$">🇲🇽 Mexican Peso (MXN)</option>
+                        <option value="ARS" data-symbol="$">🇦🇷 Argentine Peso (ARS)</option>
+                        <option value="CLP" data-symbol="$">🇨🇱 Chilean Peso (CLP)</option>
+                        <option value="COP" data-symbol="$">🇨🇴 Colombian Peso (COP)</option>
+                        <option value="PEN" data-symbol="S/">🇵🇪 Peruvian Sol (PEN)</option>
+                        <option value="ZAR" data-symbol="R">🇿🇦 South African Rand (ZAR)</option>
+                        <option value="EGP" data-symbol="£">🇪🇬 Egyptian Pound (EGP)</option>
+                        <option value="MAD" data-symbol="د.م">🇲🇦 Moroccan Dirham (MAD)</option>
+                        <option value="NGN" data-symbol="₦">🇳🇬 Nigerian Naira (NGN)</option>
+                        <option value="GHS" data-symbol="₵">🇬🇭 Ghanaian Cedi (GHS)</option>
+                        <option value="KES" data-symbol="KSh">🇰🇪 Kenyan Shilling (KES)</option>
+                        <option value="TZS" data-symbol="TSh">🇹🇿 Tanzanian Shilling (TZS)</option>
+                        <option value="UGX" data-symbol="USh">🇺🇬 Ugandan Shilling (UGX)</option>
+                        <option value="ETB" data-symbol="Br">🇪🇹 Ethiopian Birr (ETB)</option>
+                        <option value="XOF" data-symbol="CFA">🌍 West African CFA Franc (XOF)</option>
+                        <option value="XAF" data-symbol="CFA">🌍 Central African CFA Franc (XAF)</option>
+                        <option value="AED" data-symbol="د.إ">🇦🇪 UAE Dirham (AED)</option>
+                        <option value="SAR" data-symbol="﷼">🇸🇦 Saudi Riyal (SAR)</option>
+                        <option value="QAR" data-symbol="﷼">🇶🇦 Qatari Riyal (QAR)</option>
+                        <option value="KWD" data-symbol="د.ك">🇰🇼 Kuwaiti Dinar (KWD)</option>
+                        <option value="BHD" data-symbol="د.ب">🇧🇭 Bahraini Dinar (BHD)</option>
+                        <option value="OMR" data-symbol="﷼">🇴🇲 Omani Rial (OMR)</option>
+                        <option value="JOD" data-symbol="د.ا">🇯🇴 Jordanian Dinar (JOD)</option>
+                        <option value="LBP" data-symbol="ل.ل">🇱🇧 Lebanese Pound (LBP)</option>
+                        <option value="ILS" data-symbol="₪">🇮🇱 Israeli Shekel (ILS)</option>
+                        <option value="TRY" data-symbol="₺">🇹🇷 Turkish Lira (TRY)</option>
+                        <option value="IRR" data-symbol="﷼">🇮🇷 Iranian Rial (IRR)</option>
+                        <option value="PKR" data-symbol="₨">🇵🇰 Pakistani Rupee (PKR)</option>
+                        <option value="BDT" data-symbol="৳">🇧🇩 Bangladeshi Taka (BDT)</option>
+                        <option value="LKR" data-symbol="Rs">🇱🇰 Sri Lankan Rupee (LKR)</option>
+                        <option value="NPR" data-symbol="Rs">🇳🇵 Nepalese Rupee (NPR)</option>
+                        <option value="MVR" data-symbol="Rf">🇲🇻 Maldivian Rufiyaa (MVR)</option>
+                        <option value="AFN" data-symbol="؋">🇦🇫 Afghan Afghani (AFN)</option>
+                        <option value="THB" data-symbol="฿">🇹🇭 Thai Baht (THB)</option>
+                        <option value="VND" data-symbol="₫">🇻🇳 Vietnamese Dong (VND)</option>
+                        <option value="IDR" data-symbol="Rp">🇮🇩 Indonesian Rupiah (IDR)</option>
+                        <option value="MYR" data-symbol="RM">🇲🇾 Malaysian Ringgit (MYR)</option>
+                        <option value="PHP" data-symbol="₱">🇵🇭 Philippine Peso (PHP)</option>
+                        <option value="KHR" data-symbol="៛">🇰🇭 Cambodian Riel (KHR)</option>
+                        <option value="LAK" data-symbol="₭">🇱🇦 Lao Kip (LAK)</option>
+                        <option value="MMK" data-symbol="Ks">🇲🇲 Myanmar Kyat (MMK)</option>
+                        <option value="BND" data-symbol="B$">🇧🇳 Brunei Dollar (BND)</option>
+                        <option value="TWD" data-symbol="NT$">🇹🇼 Taiwan Dollar (TWD)</option>
+                        <option value="MOP" data-symbol="MOP$">🇲🇴 Macanese Pataca (MOP)</option>
+                        <option value="FJD" data-symbol="FJ$">🇫🇯 Fijian Dollar (FJD)</option>
+                        <option value="TOP" data-symbol="T$">🇹🇴 Tongan Paʻanga (TOP)</option>
+                        <option value="WST" data-symbol="WS$">🇼🇸 Samoan Tālā (WST)</option>
+                        <option value="VUV" data-symbol="VT">🇻🇺 Vanuatu Vatu (VUV)</option>
+                        <option value="SBD" data-symbol="SI$">🇸🇧 Solomon Islands Dollar (SBD)</option>
+                        <option value="PGK" data-symbol="K">🇵🇬 Papua New Guinean Kina (PGK)</option>
+                        <option value="RWF" data-symbol="RF">🇷🇼 Rwandan Franc (RWF)</option>
+                        <option value="UZS" data-symbol="soʻm">🇺🇿 Uzbekistani Som (UZS)</option>
+                        <option value="KZT" data-symbol="₸">🇰🇿 Kazakhstani Tenge (KZT)</option>
+                        <option value="KGS" data-symbol="с">🇰🇬 Kyrgyzstani Som (KGS)</option>
+                        <option value="TJS" data-symbol="ЅМ">🇹🇯 Tajikistani Somoni (TJS)</option>
+                        <option value="TMT" data-symbol="m">🇹🇲 Turkmenistani Manat (TMT)</option>
+                        <option value="AZN" data-symbol="₼">🇦🇿 Azerbaijani Manat (AZN)</option>
+                        <option value="GEL" data-symbol="₾">🇬🇪 Georgian Lari (GEL)</option>
+                        <option value="AMD" data-symbol="֏">🇦🇲 Armenian Dram (AMD)</option>
+                        <option value="BGN" data-symbol="лв">🇧🇬 Bulgarian Lev (BGN)</option>
+                        <option value="RON" data-symbol="lei">🇷🇴 Romanian Leu (RON)</option>
+                        <option value="HRK" data-symbol="kn">🇭🇷 Croatian Kuna (HRK)</option>
+                        <option value="RSD" data-symbol="дин">🇷🇸 Serbian Dinar (RSD)</option>
+                        <option value="BAM" data-symbol="KM">🇧🇦 Bosnia-Herzegovina Mark (BAM)</option>
+                        <option value="MKD" data-symbol="ден">🇲🇰 Macedonian Denar (MKD)</option>
+                        <option value="ALL" data-symbol="L">🇦🇱 Albanian Lek (ALL)</option>
+                        <option value="ISK" data-symbol="kr">🇮🇸 Icelandic Króna (ISK)</option>
+                        <option value="UAH" data-symbol="₴">🇺🇦 Ukrainian Hryvnia (UAH)</option>
+                        <option value="BYN" data-symbol="Br">🇧🇾 Belarusian Ruble (BYN)</option>
+                        <option value="MDL" data-symbol="L">🇲🇩 Moldovan Leu (MDL)</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label for="loanAmount">Home Price / Loan Amount</label>
+                    <input type="number" id="loanAmount" placeholder="500000" min="0" step="1000">
+                    <span class="currency" id="currencyDisplay">USD</span>
+                </div>
+
+                <div class="form-group">
+                    <label for="downPayment">Down Payment</label>
+                    <input type="number" id="downPayment" placeholder="100000" min="0" step="1000">
+                    <span class="currency" id="currencyDisplay2">USD</span>
+                </div>
+
+                <div class="form-group">
+                    <label for="interestRate">Interest Rate</label>
+                    <input type="number" id="interestRate" placeholder="6.5" min="0" max="30" step="0.01">
+                    <span class="currency">% APR</span>
+                </div>
+
+                <div class="form-group">
+                    <label for="loanTerm">Loan Term</label>
+                    <input type="number" id="loanTerm" placeholder="30" min="1" max="50" step="1">
+                    <span class="currency">Years</span>
+                </div>
+
+                <button class="calculate-btn" onclick="calculateMortgage()">Calculate Payment</button>
+            </div>
+
+            <div class="results-card">
+                <h2 class="card-title">Monthly Payment</h2>
+                <div class="results">
+                    <div class="monthly-payment" id="monthlyPayment">$0</div>
+                    <div class="breakdown">
+                        <div class="breakdown-item">
+                            <div class="breakdown-label">Principal & Interest</div>
+                            <div class="breakdown-value" id="principalInterest">$0</div>
+                        </div>
+                        <div class="breakdown-item">
+                            <div class="breakdown-label">Total Interest Paid</div>
+                            <div class="breakdown-value" id="totalInterest">$0</div>
+                        </div>
+                        <div class="breakdown-item">
+                            <div class="breakdown-label">Total Amount Paid</div>
+                            <div class="breakdown-value" id="totalAmount">$0</div>
+                        </div>
+                        <div class="breakdown-item">
+                            <div class="breakdown-label">Loan-to-Value Ratio</div>
+                            <div class="breakdown-value" id="ltvRatio">0%</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Ad placeholder for rectangle ad -->
+        <div class="ad-placeholder">
+            📢 Google AdSense Rectangle Ad Space (300x250)
+        </div>
+
+        <div class="info-section">
+            <h2 class="card-title">Mortgage Calculator Guide & Tips</h2>
+            <p style="font-size: 1.1em; margin-bottom: 20px; text-align: center;">Understanding your mortgage payments is crucial for making informed home buying decisions. Use our calculator to explore different scenarios and find the payment that fits your budget.</p>
+            
+            <div class="info-grid">
+                <div class="tip-card">
+                    <div class="tip-title">💡 Down Payment Tips</div>
+                    <p>While 20% down helps avoid PMI, many loans allow smaller down payments. FHA loans require as little as 3.5% down, and VA loans may require nothing down for qualified veterans.</p>
+                </div>
+
+                <div class="tip-card">
+                    <div class="tip-title">📈 Interest Rate Impact</div>
+                    <p>Even a 0.5% difference in interest rate can save or cost thousands over the life of your loan. Shop around with multiple lenders to find the best rate.</p>
+                </div>
+
+                <div class="tip-card">
+                    <div class="tip-title">⏰ Loan Term Considerations</div>
+                    <p>15-year mortgages have higher monthly payments but much lower total interest. 30-year loans offer lower monthly payments with more interest over time.</p>
+                </div>
+
+                <div class="tip-card">
+                    <div class="tip-title">🏦 Additional Costs</div>
+                    <p>Remember to budget for property taxes, homeowners insurance, HOA fees, and maintenance costs beyond your mortgage payment.</p>
+                </div>
+
+                <div class="tip-card">
+                    <div class="tip-title">🎯 Pre-Approval Benefits</div>
+                    <p>Getting pre-approved shows sellers you're serious and helps you understand your actual buying power in today's competitive market.</p>
+                </div>
+
+                <div class="tip-card">
+                    <div class="tip-title">💰 PMI Information</div>
+                    <p>Private Mortgage Insurance is typically required with less than 20% down. Factor this into your monthly budget - it usually costs 0.3-1.5% of loan amount annually.</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Ad placeholder for another banner -->
+        <div class="ad-placeholder">
+            📢 Google AdSense Banner Ad Space (728x90)
+        </div>
+
+        <div class="info-section">
+            <h2 class="card-title">Frequently Asked Questions</h2>
+            <div style="text-align: left;">
+                <h3 style="color: #667eea; margin: 20px 0 10px 0;">How accurate is this mortgage calculator?</h3>
+                <p style="margin-bottom: 20px;">Our calculator provides estimates based on the information you enter. Actual mortgage payments may vary based on additional factors like PMI, property taxes, insurance, and specific lender terms.</p>
+
+                <h3 style="color: #667eea; margin: 20px 0 10px 0;">What's not included in the monthly payment calculation?</h3>
+                <p style="margin-bottom: 20px;">This calculator shows principal and interest only. Your total housing payment will also include property taxes, homeowners insurance, PMI (if applicable), and any HOA fees.</p>
+
+                <h3 style="color: #667eea; margin: 20px 0 10px 0;">Should I choose a 15-year or 30-year mortgage?</h3>
+                <p style="margin-bottom: 20px;">15-year mortgages typically offer lower interest rates and less total interest paid, but higher monthly payments. 30-year mortgages provide lower monthly payments but more interest over time. Choose based on your budget and financial goals.</p>
+
+                <h3 style="color: #667eea; margin: 20px 0 10px 0;">How much house can I afford?</h3>
+                <p>A general rule is that your total housing costs shouldn't exceed 28% of your gross monthly income. However, consider your complete financial picture including other debts, savings goals, and lifestyle preferences.</p>
+            </div>
+        </div>
+
+        <!-- Ad placeholder for footer -->
+        <div class="ad-placeholder">
+            📢 Google AdSense Rectangle Ad Space (300x250)
+        </div>
+
+        <footer>
+            <p>&copy; 2025 Mortgage Calculator Pro. This tool provides estimates for educational purposes only. Consult with qualified lenders for official loan terms and conditions.</p>
+        </footer>
+    </div>
+
+    <script>
+        let selectedCurrency = 'USD';
+        let currencySymbol = '$';
+
+        function calculateMortgage() {
+            // Get input values
+            const loanAmount = parseFloat(document.getElementById('loanAmount').value) || 0;
+            const downPayment = parseFloat(document.getElementById('downPayment').value) || 0;
+            const interestRate = parseFloat(document.getElementById('interestRate').value) || 0;
+            const loanTerm = parseFloat(document.getElementById('loanTerm').value) || 0;
+
+            // Clear previous errors
+            document.querySelectorAll('.error').forEach(el => el.remove());
+
+            // Validation
+            if (loanAmount <= 0) {
+                showError('loanAmount', 'Please enter a valid home price');
+                return;
+            }
+            if (downPayment >= loanAmount) {
+                showError('downPayment', 'Down payment cannot exceed home price');
+                return;
+            }
+            if (interestRate <= 0 || interestRate > 30) {
+                showError('interestRate', 'Please enter a valid interest rate (0-30%)');
+                return;
+            }
+            if (loanTerm <= 0 || loanTerm > 50) {
+                showError('loanTerm', 'Please enter a valid loan term (1-50 years)');
+                return;
+            }
+
+            // Calculate principal loan amount
+            const principal = loanAmount - downPayment;
+            
+            // Convert annual rate to monthly and term to months
+            const monthlyRate = (interestRate / 100) / 12;
+            const numberOfPayments = loanTerm * 12;
+
+            // Calculate monthly payment using mortgage formula
+            const monthlyPayment = principal * (monthlyRate * Math.pow(1 + monthlyRate, numberOfPayments)) / 
+                                 (Math.pow(1 + monthlyRate, numberOfPayments) - 1);
+
+            // Calculate totals
+            const totalAmount = monthlyPayment * numberOfPayments;
+            const totalInterest = totalAmount - principal;
+            const ltvRatio = (principal / loanAmount) * 100;
+
+            // Display results with animation
+            displayResults(monthlyPayment, totalInterest, totalAmount, ltvRatio);
+        }
+
+        function displayResults(monthlyPayment, totalInterest, totalAmount, ltvRatio) {
+            // Add loading animation
+            const paymentElement = document.getElementById('monthlyPayment');
+            paymentElement.style.opacity = '0.5';
+            
+            setTimeout(() => {
+                document.getElementById('monthlyPayment').textContent = formatCurrency(monthlyPayment);
+                document.getElementById('principalInterest').textContent = formatCurrency(monthlyPayment);
+                document.getElementById('totalInterest').textContent = formatCurrency(totalInterest);
+                document.getElementById('totalAmount').textContent = formatCurrency(totalAmount);
+                document.getElementById('ltvRatio').textContent = ltvRatio.toFixed(1) + '%';
+                
+                paymentElement.style.opacity = '1';
+                
+                // Scroll to results on mobile
+                if (window.innerWidth <= 768) {
+                    document.querySelector('.results-card').scrollIntoView({
+                        behavior: 'smooth',
+                        block: 'center'
+                    });
+                }
+            }, 300);
+        }
+
+        function calculateMortgage() {
+            // Get input values
+            const loanAmount = parseFloat(document.getElementById('loanAmount').value) || 0;
+            const downPayment = parseFloat(document.getElementById('downPayment').value) || 0;
+            const interestRate = parseFloat(document.getElementById('interestRate').value) || 0;
+            const loanTerm = parseFloat(document.getElementById('loanTerm').value) || 0;
+
+            // Clear previous errors
+            document.querySelectorAll('.error').forEach(el => el.remove());
+
+            // Validation
+            if (loanAmount <= 0) {
+                showError('loanAmount', 'Please enter a valid home price');
+                return;
+            }
+            if (downPayment >= loanAmount) {
+                showError('downPayment', 'Down payment cannot exceed home price');
+                return;
+            }
+            if (interestRate <= 0 || interestRate > 30) {
+                showError('interestRate', 'Please enter a valid interest rate (0-30%)');
+                return;
+            }
+            if (loanTerm <= 0 || loanTerm > 50) {
+                showError('loanTerm', 'Please enter a valid loan term (1-50 years)');
+                return;
+            }
+
+            // Calculate principal loan amount
+            const principal = loanAmount - downPayment;
+            
+            // Convert annual rate to monthly and term to months
+            const monthlyRate = (interestRate / 100) / 12;
+            const numberOfPayments = loanTerm * 12;
+
+            // Calculate monthly payment using mortgage formula
+            const monthlyPayment = principal * (monthlyRate * Math.pow(1 + monthlyRate, numberOfPayments)) / 
+                                 (Math.pow(1 + monthlyRate, numberOfPayments) - 1);
+
+            // Calculate totals
+            const totalAmount = monthlyPayment * numberOfPayments;
+            const totalInterest = totalAmount - principal;
+            const ltvRatio = (principal / loanAmount) * 100;
+
+            // Display results with animation
+            displayResults(monthlyPayment, totalInterest, totalAmount, ltvRatio);
+        }
+
+        function showError(fieldId, message) {
+            const field = document.getElementById(fieldId);
+            const error = document.createElement('div');
+            error.className = 'error';
+            error.textContent = message;
+            field.parentNode.appendChild(error);
+        }
+
+        // Add input event listeners for real-time validation
+        document.addEventListener('DOMContentLoaded', function() {
+            const inputs = document.querySelectorAll('input[type="number"]');
+            inputs.forEach(input => {
+                input.addEventListener('input', function() {
+                    // Clear errors when user starts typing
+                    const errors = this.parentNode.querySelectorAll('.error');
+                    errors.forEach(error => error.remove());
+                });
+
+                // Calculate on Enter key
+                input.addEventListener('keypress', function(e) {
+                    if (e.key === 'Enter') {
+                        calculateMortgage();
+                    }
+                });
+            });
+
+            // Initialize currency and default values
+            updateCurrency();
+            
+            // Set default values
+            document.getElementById('loanAmount').value = '500000';
+            document.getElementById('downPayment').value = '100000';
+            document.getElementById('interestRate').value = '6.5';
+            document.getElementById('loanTerm').value = '30';
+            
+            // Calculate with default values
+            calculateMortgage();
+        });
+
+        // Add smooth scrolling for better UX
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                document.querySelector(this.getAttribute('href')).scrollIntoView({
+                    behavior: 'smooth'
+
+                });
+            });
+        });
+
+        function updateCurrency() {
+            const currencySelect = document.getElementById('currency');
+            const selectedOption = currencySelect.options[currencySelect.selectedIndex];
+            
+            selectedCurrency = selectedOption.value;
+            currencySymbol = selectedOption.getAttribute('data-symbol');
+            
+            // Update all currency displays
+            document.getElementById('currencyDisplay').textContent = selectedCurrency;
+            document.getElementById('currencyDisplay2').textContent = selectedCurrency;
+            
+            // Update placeholders based on currency
+            updatePlaceholders();
+            
+            // Recalculate if values exist
+            if (document.getElementById('loanAmount').value) {
+                calculateMortgage();
+            }
+        }
+
+        function updatePlaceholders() {
+            const loanAmountInput = document.getElementById('loanAmount');
+            const downPaymentInput = document.getElementById('downPayment');
+            
+            // Set appropriate default values based on currency
+            const defaults = {
+                'USD': { loan: '500000', down: '100000' },
+                'EUR': { loan: '450000', down: '90000' },
+                'GBP': { loan: '400000', down: '80000' },
+                'CAD': { loan: '650000', down: '130000' },
+                'AUD': { loan: '750000', down: '150000' },
+                'JPY': { loan: '55000000', down: '11000000' },
+                'CHF': { loan: '450000', down: '90000' },
+                'CNY': { loan: '3500000', down: '700000' },
+                'INR': { loan: '40000000', down: '8000000' },
+                'KRW': { loan: '600000000', down: '120000000' },
+                'SGD': { loan: '680000', down: '136000' },
+                'HKD': { loan: '3900000', down: '780000' },
+                'NZD': { loan: '800000', down: '160000' },
+                'SEK': { loan: '5200000', down: '1040000' },
+                'NOK': { loan: '5400000', down: '1080000' },
+                'DKK': { loan: '3400000', down: '680000' },
+                'PLN': { loan: '2000000', down: '400000' },
+                'CZK': { loan: '12000000', down: '2400000' },
+                'HUF': { loan: '180000000', down: '36000000' },
+                'RUB': { loan: '45000000', down: '9000000' },
+                'BRL': { loan: '2600000', down: '520000' },
+                'MXN': { loan: '10000000', down: '2000000' },
+                'default': { loan: '500000', down: '100000' }
+            };
+            
+            const currencyDefaults = defaults[selectedCurrency] || defaults['default'];
+            loanAmountInput.placeholder = currencyDefaults.loan;
+            downPaymentInput.placeholder = currencyDefaults.down;
+        }
+
+        function formatCurrency(amount) {
+            // Format number based on currency
+            const formatOptions = {
+                'JPY': { minimumFractionDigits: 0, maximumFractionDigits: 0 },
+                'KRW': { minimumFractionDigits: 0, maximumFractionDigits: 0 },
+                'HUF': { minimumFractionDigits: 0, maximumFractionDigits: 0 },
+                'VND': { minimumFractionDigits: 0, maximumFractionDigits: 0 },
+                'IDR': { minimumFractionDigits: 0, maximumFractionDigits: 0 },
+                'default': { minimumFractionDigits: 2, maximumFractionDigits: 2 }
+            };
+            
+            const options = formatOptions[selectedCurrency] || formatOptions['default'];
+            
+            return currencySymbol + amount.toLocaleString('en-US', options);
+        }
+
+        function displayResults(monthlyPayment, totalInterest, totalAmount, ltvRatio) {
+            // Add loading animation
+            const paymentElement = document.getElementById('monthlyPayment');
+            paymentElement.style.opacity = '0.5';
+            
+            setTimeout(() => {
+                document.getElementById('monthlyPayment').textContent = formatCurrency(monthlyPayment);
+                document.getElementById('principalInterest').textContent = formatCurrency(monthlyPayment);
+                document.getElementById('totalInterest').textContent = formatCurrency(totalInterest);
+                document.getElementById('totalAmount').textContent = formatCurrency(totalAmount);
+                document.getElementById('ltvRatio').textContent = ltvRatio.toFixed(1) + '%';
+                
+                paymentElement.style.opacity = '1';
+                
+                // Scroll to results on mobile
+                if (window.innerWidth <= 768) {
+                    document.querySelector('.results-card').scrollIntoView({
+                        behavior: 'smooth',
+                        block: 'center'
+                    });
+                }
+            }, 300);
+        }
+
+        function showError(fieldId, message) {
+            const field = document.getElementById(fieldId);
+            const error = document.createElement('div');
+            error.className = 'error';
+            error.textContent = message;
+            field.parentNode.appendChild(error);
+        }
+
+        // Add input event listeners for real-time validation
+        document.addEventListener('DOMContentLoaded', function() {
+            const inputs = document.querySelectorAll('input[type="number"]');
+            inputs.forEach(input => {
+                input.addEventListener('input', function() {
+                    // Clear errors when user starts typing
+                    const errors = this.parentNode.querySelectorAll('.error');
+                    errors.forEach(error => error.remove());
+                });
+
+                // Calculate on Enter key
+                input.addEventListener('keypress', function(e) {
+                    if (e.key === 'Enter') {
+                        calculateMortgage();
+                    }
+                });
+            });
+
+            // Add some default values for demonstration
+            document.getElementById('loanAmount').value = '500000';
+            document.getElementById('downPayment').value = '100000';
+            document.getElementById('interestRate').value = '6.5';
+            document.getElementById('loanTerm').value = '30';
+            
+            // Calculate with default values
+            calculateMortgage();
+        });
+
+        // Add smooth scrolling for better UX
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                document.querySelector(this.getAttribute('href')).scrollIntoView({
+                    behavior: 'smooth'
+                });
+            });
+        });
+    </script>
+</body>
+</html>
